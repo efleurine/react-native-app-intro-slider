@@ -28,6 +28,14 @@ export default class AppIntroSlider extends React.Component {
     doneLabel: 'Done',
     nextLabel: 'Next',
     prevLabel: 'Back',
+    paginationContainerStyle: {},
+    paginationDotsStyle: {},
+    dotStyle: {},
+    leftButtonContainerStyle: {},
+    rightButtonContainerStyle: {},
+    bottomButtonContainerStyle: {},
+    bottomButtonStyle: {},
+    buttonTextStyle: {}
   }
   state = {
     width,
@@ -65,17 +73,17 @@ export default class AppIntroSlider extends React.Component {
   }
 
   _renderDefaultButton = (name) => {
-    let content = <Text style={styles.buttonText}>{this.props[`${name.toLowerCase()}Label`]}</Text>;
+    let content = <Text style={[styles.buttonText, this.props.buttonTextStyle]}>{this.props[`${name.toLowerCase()}Label`]}</Text>;
     if (this.props.bottomButton) {
-      content = <View style={[styles.bottomButton, (name === 'Skip' || name === 'Prev') && { backgroundColor: 'transparent' }]}>{content}</View>
+      content = <View style={[styles.bottomButton, (name === 'Skip' || name === 'Prev') && { backgroundColor: 'transparent' },this.props.bottomButtonStyle]}>{content}</View>
     }
     return content;
   }
 
   _renderOuterButton = (content, name, onPress) => {
-    const style = (name === 'Skip' || name === 'Prev') ? styles.leftButtonContainer : styles.rightButtonContainer;
+    const style = (name === 'Skip' || name === 'Prev') ? [styles.leftButtonContainer, this.props.leftButtonContainerStyle] : [styles.rightButtonContainer, this.props.rightButtonContainerStyle];
     return (
-      <View style={this.props.bottomButton ? styles.bottomButtonContainer : style}>
+      <View style={this.props.bottomButton ? [styles.bottomButtonContainer, this.props.bottomButtonContainerStyle] : style}>
         <TouchableOpacity onPress={onPress} style={this.props.bottomButton && styles.flexOne}>
           {content}
         </TouchableOpacity>
@@ -99,8 +107,8 @@ export default class AppIntroSlider extends React.Component {
     const btn = isLastSlide ? this._renderDoneButton() : this._renderNextButton();
 
     return (
-      <View style={styles.paginationContainer}>
-        <View style={styles.paginationDots}>
+      <View style={[styles.paginationContainer, this.props.paginationContainerStyle]}>
+        <View style={[styles.paginationDots, this.props.paginationDotsStyle]}>
           {!this.props.bottomButton && skipBtn}
           {this.props.slides.length > 1 && this.props.slides.map((_, i) => (
             <View
@@ -108,6 +116,7 @@ export default class AppIntroSlider extends React.Component {
               style={[
                 { backgroundColor: i === this.state.activeIndex ? this.props.activeDotColor : this.props.dotColor },
                 styles.dot,
+                this.props.dotStyle
               ]}
             />
           ))}
